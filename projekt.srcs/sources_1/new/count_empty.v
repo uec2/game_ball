@@ -21,6 +21,7 @@
 
 
 module count_empty(
+    input wire clk,
     input wire [63:0] color_0_in, color_1_in,
     output reg [6:0] empty_places
     );
@@ -34,7 +35,7 @@ module count_empty(
 //        end
     
     always @* begin
-        ball_reg = color_0_in | color_0_in;
+        ball_reg = color_0_in | color_1_in;
         count_ones=0;
         for(idx=0; idx<=63; idx=idx+1) begin 
         count_ones = count_ones + ball_reg[idx];

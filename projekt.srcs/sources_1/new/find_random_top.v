@@ -21,46 +21,66 @@
 
 
 module find_random_top(
-    //input wire clk,
+    input wire clk,
+    input wire find_en,
+    input wire [8:0] random_colors_in,
     input wire [63:0] color_0_in, color_1_in,
-    input wire color_amount,
-    output wire [23:0] random_empty,
-    output wire [63:0] color_0_out, color_1_out
+    input wire [2:0] color_amount,
+    output reg [23:0] random_empty,
+    output reg [63:0] color_0_out, color_1_out,
+    output reg [8:0] random_colors_out
     );
     
     wire [6:0] empty_places;
     wire [23:0] random_number;
-    wire [8:0] random_num_color;
+    
     //reg [63:0] ball_reg_temp;
-
+    wire [23:0] random_empty_nxt;
+    wire [63:0] color_0_nxt, color_1_nxt;
+    wire [8:0] random_colors_nxt;
+    
+    always @(posedge clk) begin
+        if(find_en) begin
+        random_empty = random_empty_nxt;
+        color_0_out = color_0_nxt;
+        color_1_out = color_1_nxt;
+        random_colors_out = random_colors_nxt; 
+        end
+    end
+    
     count_empty my_count_empty(
+    .clk(clk),
     .color_0_in(color_0_in),
     .color_1_in(color_1_in),
     .empty_places(empty_places)
     );
     
-    random #(.WIDTH(23), .AMOUNT(6)) random_places(
-    .amount(empty_places),
+    random #(.WIDTH(23), .AMOUNT(7), .DIV(6)) random_places(
+    .clk(clk),
+    .rnd_col_en(1),
+    .divider(empty_places),
     .repeat_num(1'b0),
     .random_number(random_number)
     );
     
-    random #(.WIDTH(8), .AMOUNT(2)) random_color(
-    .amount(color_amount),
+    random #(.WIDTH(8), .AMOUNT(2), .DIV(2)) random_color(
+    .clk(clk),
+    .rnd_col_en(1),
+    .divider(color_amount),
     .repeat_num(1'b1),
-    .random_number(random_num_color)
+    .random_number(random_colors_nxt)
     );
     
     find_random_empty find_empty(
+    .clk(clk),
     .color_0_in(color_0_in),
     .color_1_in(color_1_in),
     .random_number(random_number),
-    .random_empty(random_empty),
-    .random_color(random_num_color),
-    .color_0_out(color_0_out),
-    .color_1_out(color_1_out)
+    .random_empty(random_empty_nxt),
+    .random_color(random_colors_in),
+    .color_0_out(color_0_nxt),
+    .color_1_out(color_1_nxt)
     );
-    
 //    always @* begin
 //          ball_reg_temp = (ball_reg_in << random_empty[0:7]);
 //        //ball_reg_out = ball_reg_temp | 63'h0000000000000001;

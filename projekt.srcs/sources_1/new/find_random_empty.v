@@ -21,6 +21,7 @@
 
 
 module find_random_empty(
+    input wire clk,
     input wire [63:0] color_0_in, color_1_in,
     input wire [23:0] random_number,
     input wire [8:0] random_color,
@@ -32,7 +33,7 @@ module find_random_empty(
     reg [1:0] n;
     reg [7:0] counter;
     reg [63:0] ball_reg_temp_1, ball_reg_temp_2, ball_reg_temp_3, ball_reg_in;
-    reg [63:0] clr0_temp1, clr0_temp2, clr0_temp3, clr1_temp1, clr1_temp2, clr1_temp3;
+    reg [63:0] clr0_temp1, clr0_temp2, clr0_temp3, clr1_temp1, clr1_temp2, clr1_temp3;  
     
     always @* begin
     counter = -1;

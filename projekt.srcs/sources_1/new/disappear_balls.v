@@ -21,6 +21,8 @@
 
 
 module disappear_balls(
+    input wire clk,
+    input wire disp_en,
     input wire [63:0] color_0_in,
     input wire [63:0] color_1_in,
     input wire [9:0] points_in,
@@ -37,6 +39,7 @@ module disappear_balls(
     //reg [63:0] color_0_nxt, color_1_nxt; 
     
     always @* begin
+    if(disp_en) begin
     four_counter0=0;
     four_counter1=0;
     color_0_out = color_0_in;
@@ -58,16 +61,16 @@ module disappear_balls(
                 if(counter_x0 >= 4) begin 
                     four_counter0 = four_counter0 + 1; 
                     color_0_out[(n*8)+i] = 0;
-                    color_0_out[(n*8)+i-1] = 0;
-                    color_0_out[(n*8)+i-2] = 0;
-                    color_0_out[(n*8)+i-3] = 0;
+                    color_0_out[(n*8)+(i-1)] = 0;
+                    color_0_out[(n*8)+(i-2)] = 0;
+                    color_0_out[(n*8)+(i-3)] = 0;
                 end  
                 if(counter_y0 >=4) begin 
                     four_counter0 = four_counter0 + 1; 
                     color_0_out[(i*8)+n] = 0;
-                    color_0_out[(i*8)+n-1] = 0;
-                    color_0_out[(i*8)+n-2] = 0;
-                    color_0_out[(i*8)+n-3] = 0;                  
+                    color_0_out[(i*8)+(n-1)] = 0;
+                    color_0_out[(i*8)+(n-2)] = 0;
+                    color_0_out[(i*8)+(n-3)] = 0;                  
                 end      
 
                 
@@ -95,6 +98,7 @@ module disappear_balls(
                 end                                    
             end               
         end 
+    end
     end
     
     assign points_out = points_in + four_counter0 + four_counter1;   

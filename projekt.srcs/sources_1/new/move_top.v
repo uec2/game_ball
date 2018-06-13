@@ -23,20 +23,30 @@
 module move_top(
     input clk,
     input rst,
+    input move_en,
     input wire [11:0] xpos_mouse, ypos_mouse,
     input wire mouse_left,
     input wire [63:0] color_0_in, color_1_in,
     
-    output wire [63:0] color_0_out, color_1_out,
-    output wire follow_ball,
-    output wire back_ball,
-    output wire set_ball
+    output reg[63:0] color_0_out, color_1_out,
+    output reg follow_ball,
+    output reg back_ball,
+    output reg set_ball
     );
     
     wire [3:0] column_c, row_c, column_out_r, row_out_r, column_out_d, row_out_d;
     wire [63:0] color_0_c, color_1_c, color_0_r, color_1_r, color_0_d, color_1_d;
     wire empty, putting_end, delete;
+    wire [63:0] color_0_nxt, color_1_nxt;
+    wire follow_ball_nxt, back_ball_nxt;
     
+    always @(posedge clk) begin
+    color_0_out <= color_0_nxt;
+    color_1_out <= color_1_nxt;
+    follow_ball <= follow_ball_nxt;
+    back_ball <= back_ball_nxt;
+    set_ball <= putting_end;
+    end
     
     convert_to_row_col put_convert(
     .clk(clk),
@@ -77,8 +87,8 @@ module move_top(
     .row_out_r(row_out_r),
     .column_out_d(column_out_d),
     .row_out_d(row_out_d),    
-    .follow_ball(follow_ball),
-    .back_ball(back_ball),
+    .follow_ball(follow_ball_nxt),
+    .back_ball(back_ball_nxt),
     .putting_end(putting_end), 
     .delete(delete)
     );
@@ -113,8 +123,7 @@ module move_top(
         col_end = column_out_r;
         end  
      end
-     
-        
+            
     write_data record_data(
     .clk(clk),
     .rst(rst),
@@ -127,13 +136,13 @@ module move_top(
     .color_0_in(color_0_d),
     .color_1_in(color_1_d),
     
-    .color_0_out(color_0_out),
-    .color_1_out(color_1_out),
+    .color_0_out(color_0_nxt),
+    .color_1_out(color_1_nxt),
     .ball_reg(),
     .empty()    
     );
     
-
+//assign set_ball = putting_end;
     
     
 endmodule

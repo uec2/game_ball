@@ -22,38 +22,42 @@
 
 module random_test();
     
-    reg [63:0] ball_reg;
+    reg [63:0] color_0_in, color_1_in;
     wire [6:0] empty_places;
-    wire [23:0] random_number, random_empty;
+    wire [20:0] random_number;
+    wire [8:0] random_num_color;
+    reg [2:0] color_amount;
     
     
-    count_empty test_count_empty(
-    .ball_reg(ball_reg),
+    count_empty my_count_empty(
+    .color_0_in(color_0_in),
+    .color_1_in(color_1_in),
     .empty_places(empty_places)
     );
     
-    random random_t(
+    random #(.WIDTH(20), .AMOUNT(6)) random_places(
     .amount(empty_places),
+    .repeat_num(1'b0),
     .random_number(random_number)
     );
     
-    find_random_empty find_random_empty_test(
-    .ball_reg(ball_reg),
-    .random_number(random_number),
-    .random_empty(random_empty)   
+    random #(.WIDTH(8), .AMOUNT(2)) random_color(
+    .amount(color_amount),
+    .repeat_num(1'b1),
+    .random_number(random_num_color)
     );
     
     initial
     begin
        $display("Start of simulation");
-       ball_reg = 64'h1111111111111111;
-       #100 $display ("%h", random_empty);
-       ball_reg = 64'hfff1111111113333;
-       #100 $display ("%h", random_empty);
-       ball_reg = 64'hffffffffffffff11;
-       #100 $display ("%h", random_empty);
-       ball_reg = 64'hffffffffffffffF1;
-       #100 $display ("%h", random_empty);
+       color_amount = 4'b0010;
+       color_0_in = 64'h1111111111111111; 
+       color_1_in = 64'h2222222222222222;
+       #100 $display ("%h", empty_places);
+       color_amount = 4'b0010;
+       color_0_in = 64'h0333333333333333;
+       color_1_in = 64'hccccccccccccccc0;
+       #100 $display ("%h", empty_places);
        $display("Simulation is over, check the waveform");
        $stop;
     end

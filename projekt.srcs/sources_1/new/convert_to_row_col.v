@@ -31,7 +31,7 @@ localparam      UP = 32,
                 LEFT = 256,
                 SQUARE_SIZE = 64;
 
-reg [6:0] column_nxt, row_nxt, col_nxt, r_nxt;
+reg [6:0] row_nxt, col_nxt;
 reg [11:0] xpos_nxt, ypos_nxt;
 
 
@@ -42,7 +42,7 @@ always @(posedge clk)
             row <= 0;
         end
         else begin
-            column <= column_nxt;
+            column <= col_nxt;
             row <= row_nxt;
         end
     end
@@ -52,6 +52,6 @@ always @*
         xpos_nxt = xpos - LEFT;
         ypos_nxt = ypos - UP;
         col_nxt = xpos_nxt[9 : 6] + 1;
-        r_nxt = ypos_nxt[9:6] + 1;
+        row_nxt = ypos_nxt[9:6] + 1;
     end
 endmodule

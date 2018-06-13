@@ -40,7 +40,7 @@ module write_data(
     //reg [64:0] color_0, color_1; 
     reg [64:0] temp_reg, temp_reg_nxt, color_0_nxt, color_1_nxt;
    
-   always @(clk)begin
+   always @(posedge clk)begin
     if(rst)begin
         temp_reg <= 64'b0;
         color_0_out <= 64'b0;
@@ -86,7 +86,7 @@ module write_data(
         end
     end    
     
-    assign ball_reg = color_0_out || color_1_out;
-    assign empty = !(((temp_reg && ball_reg) >> (xparam + 8*yparam)) && 1'b1);   
+    assign ball_reg = color_0_out | color_1_out;
+    assign empty = !(((temp_reg & ball_reg) >> (xparam + 8*yparam)) & 1'b1);   
     
 endmodule

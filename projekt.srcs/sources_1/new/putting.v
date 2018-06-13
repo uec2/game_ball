@@ -83,9 +83,9 @@ always @* begin
 	always @* begin	
 		case(state)
 			IDLE: begin
-			    follow_ball = 0;
-			    delete = 0;
-			    putting_end = 0;
+			    follow_ball = 1'b0;
+			    delete = 1'b0;
+			    putting_end = 1'b0;
 //			    col_temp = column_in;
 //                row_temp = row_in;
 			    end
@@ -99,16 +99,16 @@ always @* begin
 				else state_nxt = IDLE;
 				end		
 			PUTT: begin
-				 back_ball = 0;
+				 back_ball = 1'b0;
 				 col_r = column_in;
 				 row_r = row_in;
 			     end
 			BACK: begin
-				 back_ball = 1;
-				 state_nxt = IDLE;
+				 back_ball = 1'b1;
+				 //state_nxt = IDLE;
 			     end
 			END: begin
-			     putting_end = 1;		
+			     putting_end = 1'b1;		
 			     end
 		endcase
 	end	
