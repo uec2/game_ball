@@ -63,7 +63,11 @@ module core_modules(
     output reg [8:0] random_colors_out,
     output wire follow_ball, back_ball, set_ball, set_new,
     output wire [9:0] points_out,
-    output wire [23:0] random_empty
+    output wire [23:0] random_empty,
+    output wire [2:0] color_select,
+    output wire end_game,
+    output wire find_end,
+    output wire [3:0] back_column, back_row, putt_column, putt_row
 );
 
             
@@ -72,6 +76,7 @@ reg [2:0] state_nxt, state;
 reg [63:0] color_0_nxt, color_1_nxt;
 
 wire [8:0] random_colors_in, random_colors_nxt;
+wire [12:0] random_lfsr;
 //reg rnd_col_en, find_en;
             
 always @(posedge clk) begin
@@ -84,18 +89,26 @@ always @(posedge clk) begin
 
 end
 
+    LFSR random_LFSR(
+    .clock(clk),
+    .reset(reset),
+    .rnd(random_lfsr) 
+    );   
 
     random #(.WIDTH(8), .AMOUNT(2), .DIV(2)) random_color(
     .clk(clk),
+    .reset(reset),
     .rnd_col_en(rnd_col_en),
     .divider(color_amount),
     .repeat_num(1'b1),
-    .random_number(random_colors_in)
+    .random_number(random_colors_in),
+    .random_lfsr(random_lfsr)
     );
 
 
     find_random_top find_core(
     .clk(clk),
+    .reset(reset),
     .find_en(find_en),
     .color_0_in(color_0_in),
     .color_1_in(color_1_in),
@@ -104,7 +117,9 @@ end
     .random_empty(random_empty),
     .color_0_out(color_0_find), 
     .color_1_out(color_1_find),
-    .random_colors_out(random_colors_nxt)
+    .random_colors_out(random_colors_nxt),
+    .end_game(end_game),
+    .find_end(find_end)
     );
     
     move_top move_core(
@@ -121,7 +136,12 @@ end
     .color_1_out(color_1_mv),
     .follow_ball(follow_ball),
     .back_ball(back_ball),
-    .set_ball(set_ball)
+    .set_ball(set_ball),
+    .color_select(color_select),
+    .column_out_d(back_column), 
+    .row_out_d(back_row), 
+    .column_out_r(putt_column), 
+    .row_out_r(putt_row)
     );
                     
     disappear_balls disppear_core(

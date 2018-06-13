@@ -31,14 +31,17 @@ module move_top(
     output reg[63:0] color_0_out, color_1_out,
     output reg follow_ball,
     output reg back_ball,
-    output reg set_ball
+    output reg set_ball,
+    output reg [2:0] color_select,
+    output wire [3:0] column_out_r, row_out_r, column_out_d, row_out_d
     );
     
-    wire [3:0] column_c, row_c, column_out_r, row_out_r, column_out_d, row_out_d;
+    wire [3:0] column_c, row_c; //column_out_r, row_out_r, column_out_d, row_out_d;
     wire [63:0] color_0_c, color_1_c, color_0_r, color_1_r, color_0_d, color_1_d;
     wire empty, putting_end, delete;
     wire [63:0] color_0_nxt, color_1_nxt;
     wire follow_ball_nxt, back_ball_nxt;
+    
     
     always @(posedge clk) begin
     color_0_out <= color_0_nxt;
@@ -122,6 +125,8 @@ module move_top(
         row_end = row_out_r;
         col_end = column_out_r;
         end  
+        if(color_0_r != color_0_d) color_select = 0;
+        else if(color_1_r != color_1_d) color_select = 1;
      end
             
     write_data record_data(

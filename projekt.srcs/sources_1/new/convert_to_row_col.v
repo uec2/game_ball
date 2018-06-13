@@ -31,7 +31,7 @@ localparam      UP = 32,
                 LEFT = 256,
                 SQUARE_SIZE = 64;
 
-reg [6:0] row_nxt, col_nxt;
+reg [3:0] row_nxt, col_nxt;
 reg [11:0] xpos_nxt, ypos_nxt;
 
 

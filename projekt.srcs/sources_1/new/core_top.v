@@ -32,7 +32,10 @@ module core_top(
     output wire [63:0] color_1_out,
     output wire [8:0] random_colors_out,
     output wire follow_ball, back_ball, set_ball,
-    output wire points_out_digit    
+    output wire points_out_digit,
+    output wire [2:0] color_select,
+    output wire end_game,
+    output wire [3:0] back_column, back_row, putt_column, putt_row
 );
 
 wire [63:0] color_0_in, color_1_in;
@@ -74,7 +77,13 @@ core_modules modules(
     .set_ball(set_ball), 
     .set_new(set_new),
     .points_out(points_out),
-    .random_empty(random_empty)
+    .random_empty(random_empty),
+    .color_select(color_select),
+    .end_game(end_game),
+    .back_column(back_column), 
+    .back_row(back_row), 
+    .putt_column(putt_column), 
+    .putt_row(putt_row)
 );
 
 control_ms machine_states(
